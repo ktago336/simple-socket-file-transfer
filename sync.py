@@ -2,6 +2,7 @@ import sys
 import socket
 import time
 import os
+
 ip=sys.argv[1]
 port=5555
 sendOrRecv=sys.argv[2]
