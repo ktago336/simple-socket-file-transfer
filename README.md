@@ -2,7 +2,7 @@
 File transfering using sockets<br>
 <s>Run with parameters: sync.py "ip" "mode"<br>
 <h3>ip</h3>If recieving files use your local ip to bind. If sending use destination ip. Defalt port: 5555<br>
-<h3>mode</h3> Use "s" parameter to set the send mode or "r" for recieve mode</s><br>Use s parameter for the first start<hr>
+<h3>mode</h3> Use "s" parameter to set the send mode or "r" for recieve mode</s><br><b>Use s parameter for the first start</b><hr>
 <h2>setupsync.py</h2> Module functions 
 <h4>firstRun()</h4>sets up folder "files" and "data.cfg" in current directory. "files" - synchronized files, "data.cfg" - stores "files" folder full filepaths as keys of dict and md5 hash as value for changes check
 <h4>createCfg(path)</h4>in current 'path' ("files" folder) walks all directories and saves full file paths in "data.cfg"
