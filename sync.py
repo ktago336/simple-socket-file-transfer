@@ -13,11 +13,6 @@ if sendOrRecv=='s':
 
 start.firstRun()
 
-path='./files'
-nOfFiles=len([f for f in os.listdir(path)
-              if os.path.isfile(os.path.join(path,f))])
-print(nOfFiles)
-
 
 #if recieving
 if sendOrRecv=='0':
