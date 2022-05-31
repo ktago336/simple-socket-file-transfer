@@ -48,7 +48,7 @@ class sync:
                 out.close()
             return path
     
-    def updateFile(self,filePath):
+    def updateFile(self,filePath, path_to_create):
         mode=None
         port=9090
         ##socket menu
@@ -69,16 +69,22 @@ class sync:
             sock.bind((iphost, port))
             print('listening...', sock.getsockname())
             
-            sock.listen(10)        
-            conn, addr = sock.accept()
-            print('CONNECTED')
-            while True:
 
+            while True:
+                sock.listen(10)        
+                conn, addr = sock.accept()
+                print('CONNECTED')
                 print('connected to:', addr)
                 
+                dir = (conn.recv(1024)).decode ('UTF-8')
+                print (self.getWorkingPath()+'recieved {}  dir'.format(dir))
+                try:
+                    os.makedirs(self.getWorkingPath()+dir)
+                except FileExistsError:
+                    pass
                 name_f = (conn.recv(1024)).decode ('UTF-8')
                 print ('recieved {}  NAME'.format(name_f))
-                f = open(r'{}'.format(name_f),'wb')
+                f = open(self.getWorkingPath()+r'{}'.format(name_f),'wb')
 
                 while True:
                     l = conn.recv(1024)
@@ -88,7 +94,8 @@ class sync:
                 f.close()
                 print ('sucseed')
                 print('File {} received'.format(name_f))
-                
+                time.sleep(1)
+                conn.close()
             conn.close()
             sock.close()
 
@@ -114,10 +121,13 @@ class sync:
             print ('send mode')
             sock=socket.socket()
             sock.connect((ip, port))
-            time.sleep(0.1)
-            pathToSend='./' + filePath[len(os.getcwd())+1:].replace('\\','/')
+          
+            sock.send((bytes(path_to_create,encoding='UTF-8')))
             
+            time.sleep(0.1)
+            pathToSend='/' + filePath[len(os.getcwd())+1:].replace('\\','/')           
             sock.send((bytes(pathToSend,encoding='UTF-8')))
+            
             print(pathToSend)#####
             time.sleep(0.1)
             f=open(filePath,  "rb")
@@ -147,7 +157,8 @@ class sync:
                     try:    
                         if dictFiles[os.path.join(root,file)]!=h.hexdigest():
                             print('{} CHANGED. UPDATING...'.format(file))
-                            self.updateFile(os.path.join(root,file))
+                            print(root[len(os.getcwd()):])
+                            self.updateFile(os.path.join(root,file),root[len(os.getcwd()):].replace('\\','/'))
                             dictFiles[os.path.join(root,file)]=h.hexdigest()
                         else:
                             print('{} OK'.format(file))
@@ -200,7 +211,7 @@ class sync:
 s=sync()
 
 s.checkPath()
-shutil.move(s.getWorkingPath()+'/beb2.txt',s.getWorkingPath()+'/newdir/beb2.txt')
+#os.mkdir(s.getWorkingPath()+'/dir1')
 print('\n\npaths\n\n')
 print(s.getWorkingPath())
 print(s.getPath())
