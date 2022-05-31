@@ -3,16 +3,22 @@ import socket
 import time
 import os
 import setupsync as start
-
 path=os.getcwd()+'/files'
-destinationIP=sys.argv[1]
 Port=9090
-sendOrRecv=sys.argv[2]
-if sendOrRecv=='s':
-    dataToSend=sys.argv[3]
+try:
+    
+    args=sys.argv[1]
+    if args=='s':   
+        start.firstRun()
+except IndexError:
+    pass
+s=sync()
+s.updateFile('','')
+start.createCfg()
+start.checkSum()
+start.updateFile('./files/beb1.txt')
 
-start.firstRun()
-
+sync.checkPath()
 
 #if recieving
 if sendOrRecv=='0':
@@ -39,10 +45,18 @@ if sendOrRecv=='0':
 if sendOrRecv=='s':
     print ('send mode')
     sock=socket.socket()
-    sock.connect(('10.0.0.69', 5555))
+    sock.connect((ip, port))
 
-    f_name=input('data to send')
-    sock.send(())
+    f_name=input('data to send\n')
+    sock.send((bytes(f_name,encoding='UTF-8')))
+    time.sleep(0.1)
+    f=open(f_name,  "rb")
+    l=f.read(1024)
+    while (l):
+        sock.sendall(l)
+        l=f.read(1024)
+    sock.close()
+    f.close()
     print ('sucseed')
     
 if sendOrRecv=='r':
@@ -62,7 +76,7 @@ if sendOrRecv=='r':
 
         name_f = (conn.recv(1024)).decode ('UTF-8')
 
-        f = open('files/' + name_f,'wb')
+        f = open(name_f,'wb')
 
         while True:
 
@@ -75,8 +89,8 @@ if sendOrRecv=='r':
 
         f.close()
         conn.close()
-print ('sucseed')
-print('File received')
+    print ('sucseed')
+    print('File received')
 
-sock.close()
+    sock.close()
     
